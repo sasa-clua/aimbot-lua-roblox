@@ -38,7 +38,7 @@ Title.Size = UDim2.new(1, 0, 0, 40)
 Title.Position = UDim2.new(0, 0, 0, 0)
 Title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Title.BorderSizePixel = 0
-Title.Text = "Curseur Auto-Lock"
+Title.Text = "AIMBOT"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 18
@@ -103,7 +103,7 @@ end
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if input.UserInputType == Enum.UserInputType.MouseButton2 then
         isActive = true
-        StatusLabel.Text = "Curseur: ON"
+        StatusLabel.Text = "AIMBOT: ON"
         StatusLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
     end
 end)
@@ -111,7 +111,7 @@ end)
 UserInputService.InputEnded:Connect(function(input, gameProcessed)
     if input.UserInputType == Enum.UserInputType.MouseButton2 then
         isActive = false
-        StatusLabel.Text = "Curseur: OFF"
+        StatusLabel.Text = "AIMBOT: OFF"
         StatusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
     end
 end)
