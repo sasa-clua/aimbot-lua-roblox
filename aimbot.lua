@@ -34,7 +34,7 @@ Title.Size = UDim2.new(1, 0, 0, 40)
 Title.Position = UDim2.new(0, 0, 0, 0)
 Title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Title.BorderSizePixel = 0
-Title.Text = "Menu Fonctionnel"
+Title.Text = "AIMBOT & ESP"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 18
@@ -66,7 +66,7 @@ AimButton.Size = UDim2.new(0, 240, 0, 40)
 AimButton.Position = UDim2.new(0, 20, 0, 55)
 AimButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 AimButton.BorderSizePixel = 0
-AimButton.Text = "Curseur: OFF"
+AimButton.Text = "AIMBOT: OFF"
 AimButton.TextColor3 = Color3.fromRGB(255, 100, 100)
 AimButton.Font = Enum.Font.GothamBold
 AimButton.TextSize = 16
@@ -97,7 +97,7 @@ Instructions.Name = "Instructions"
 Instructions.Size = UDim2.new(1, -20, 0, 20)
 Instructions.Position = UDim2.new(0, 10, 0, 155)
 Instructions.BackgroundTransparency = 1
-Instructions.Text = "Clic droit pour viser quand ON"
+Instructions.Text = "Right click for aimbot"
 Instructions.TextColor3 = Color3.fromRGB(200, 200, 200)
 Instructions.Font = Enum.Font.Gotham
 Instructions.TextSize = 11
@@ -295,11 +295,11 @@ AimButton.MouseButton1Click:Connect(function()
     aimEnabled = not aimEnabled
     
     if aimEnabled then
-        AimButton.Text = "Curseur: ON"
+        AimButton.Text = "AIMBOT: ON"
         AimButton.TextColor3 = Color3.fromRGB(100, 255, 100)
         AimButton.BackgroundColor3 = Color3.fromRGB(50, 100, 50)
     else
-        AimButton.Text = "Curseur: OFF"
+        AimButton.Text = "AIMBOT: OFF"
         AimButton.TextColor3 = Color3.fromRGB(255, 100, 100)
         AimButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
         isAiming = false
