@@ -11,7 +11,7 @@ local isAiming = false
 local espObjects = {}
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AIMBOTMenu"
+ScreenGui.Name = "CurseurMenu"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -44,13 +44,29 @@ local TitleCorner = Instance.new("UICorner")
 TitleCorner.CornerRadius = UDim.new(0, 10)
 TitleCorner.Parent = Title
 
+local CloseButton = Instance.new("TextButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Size = UDim2.new(0, 35, 0, 35)
+CloseButton.Position = UDim2.new(1, -40, 0, 2.5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+CloseButton.BorderSizePixel = 0
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.TextSize = 18
+CloseButton.Parent = MenuFrame
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 8)
+CloseCorner.Parent = CloseButton
+
 local AimButton = Instance.new("TextButton")
 AimButton.Name = "AimButton"
 AimButton.Size = UDim2.new(0, 240, 0, 40)
 AimButton.Position = UDim2.new(0, 20, 0, 55)
 AimButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 AimButton.BorderSizePixel = 0
-AimButton.Text = "AIMBOT: OFF"
+AimButton.Text = "Curseur: OFF"
 AimButton.TextColor3 = Color3.fromRGB(255, 100, 100)
 AimButton.Font = Enum.Font.GothamBold
 AimButton.TextSize = 16
@@ -81,11 +97,15 @@ Instructions.Name = "Instructions"
 Instructions.Size = UDim2.new(1, -20, 0, 20)
 Instructions.Position = UDim2.new(0, 10, 0, 155)
 Instructions.BackgroundTransparency = 1
-Instructions.Text = "Right click to activate aimbot"
+Instructions.Text = "Clic droit pour viser quand ON"
 Instructions.TextColor3 = Color3.fromRGB(200, 200, 200)
 Instructions.Font = Enum.Font.Gotham
 Instructions.TextSize = 11
 Instructions.Parent = MenuFrame
+
+CloseButton.MouseButton1Click:Connect(function()
+    MenuFrame.Visible = false
+end)
 
 local function getClosestPlayer()
     local closestPlayer = nil
@@ -113,6 +133,28 @@ local function getClosestPlayer()
     return closestPlayer
 end
 
+local function createLine(partA, partB, parent)
+    local attachment0 = Instance.new("Attachment")
+    attachment0.Parent = partA
+    
+    local attachment1 = Instance.new("Attachment")
+    attachment1.Parent = partB
+    
+    local beam = Instance.new("Beam")
+    beam.Attachment0 = attachment0
+    beam.Attachment1 = attachment1
+    beam.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
+    beam.Width0 = 0.05
+    beam.Width1 = 0.05
+    beam.FaceCamera = true
+    beam.LightEmission = 1
+    beam.LightInfluence = 0
+    beam.Transparency = NumberSequence.new(0)
+    beam.Parent = parent
+    
+    return {beam, attachment0, attachment1}
+end
+
 local function createESP(player)
     if espObjects[player] then return end
     
@@ -133,55 +175,83 @@ local function createESP(player)
         
         if not humanoid or not rootPart then return end
         
-        local parts = {
-            "Head", "UpperTorso", "LowerTorso",
-            "LeftUpperArm", "LeftLowerArm", "LeftHand",
-            "RightUpperArm", "RightLowerArm", "RightHand",
-            "LeftUpperLeg", "LeftLowerLeg", "LeftFoot",
-            "RightUpperLeg", "RightLowerLeg", "RightFoot"
-        }
+        local head = character:FindFirstChild("Head")
+        local upperTorso = character:FindFirstChild("UpperTorso")
+        local lowerTorso = character:FindFirstChild("LowerTorso")
+        local leftUpperArm = character:FindFirstChild("LeftUpperArm")
+        local leftLowerArm = character:FindFirstChild("LeftLowerArm")
+        local leftHand = character:FindFirstChild("LeftHand")
+        local rightUpperArm = character:FindFirstChild("RightUpperArm")
+        local rightLowerArm = character:FindFirstChild("RightLowerArm")
+        local rightHand = character:FindFirstChild("RightHand")
+        local leftUpperLeg = character:FindFirstChild("LeftUpperLeg")
+        local leftLowerLeg = character:FindFirstChild("LeftLowerLeg")
+        local leftFoot = character:FindFirstChild("LeftFoot")
+        local rightUpperLeg = character:FindFirstChild("RightUpperLeg")
+        local rightLowerLeg = character:FindFirstChild("RightLowerLeg")
+        local rightFoot = character:FindFirstChild("RightFoot")
         
-        for _, partName in pairs(parts) do
-            local part = character:FindFirstChild(partName)
-            if part then
-                local box = Instance.new("BoxHandleAdornment")
-                box.Size = part.Size
-                box.Adornee = part
-                box.Color3 = Color3.fromRGB(255, 0, 0)
-                box.Transparency = 0.7
-                box.AlwaysOnTop = true
-                box.ZIndex = 1
-                box.Parent = espFolder
-            end
-        end
+        if head and upperTorso then createLine(head, upperTorso, espFolder) end
+        if upperTorso and lowerTorso then createLine(upperTorso, lowerTorso, espFolder) end
+        
+        if upperTorso and leftUpperArm then createLine(upperTorso, leftUpperArm, espFolder) end
+        if leftUpperArm and leftLowerArm then createLine(leftUpperArm, leftLowerArm, espFolder) end
+        if leftLowerArm and leftHand then createLine(leftLowerArm, leftHand, espFolder) end
+        
+        if upperTorso and rightUpperArm then createLine(upperTorso, rightUpperArm, espFolder) end
+        if rightUpperArm and rightLowerArm then createLine(rightUpperArm, rightLowerArm, espFolder) end
+        if rightLowerArm and rightHand then createLine(rightLowerArm, rightHand, espFolder) end
+        
+        if lowerTorso and leftUpperLeg then createLine(lowerTorso, leftUpperLeg, espFolder) end
+        if leftUpperLeg and leftLowerLeg then createLine(leftUpperLeg, leftLowerLeg, espFolder) end
+        if leftLowerLeg and leftFoot then createLine(leftLowerLeg, leftFoot, espFolder) end
+        
+        if lowerTorso and rightUpperLeg then createLine(lowerTorso, rightUpperLeg, espFolder) end
+        if rightUpperLeg and rightLowerLeg then createLine(rightUpperLeg, rightLowerLeg, espFolder) end
+        if rightLowerLeg and rightFoot then createLine(rightLowerLeg, rightFoot, espFolder) end
         
         local billboard = Instance.new("BillboardGui")
         billboard.Adornee = rootPart
-        billboard.Size = UDim2.new(0, 200, 0, 50)
-        billboard.StudsOffset = Vector3.new(0, 3, 0)
+        billboard.Size = UDim2.new(0, 50, 0, 100)
+        billboard.StudsOffset = Vector3.new(-2.5, 0, 0)
         billboard.AlwaysOnTop = true
         billboard.Parent = espFolder
         
         local nameLabel = Instance.new("TextLabel")
-        nameLabel.Size = UDim2.new(1, 0, 0.5, 0)
+        nameLabel.Size = UDim2.new(2, 0, 0, 20)
+        nameLabel.Position = UDim2.new(-0.5, 0, 0, -25)
         nameLabel.BackgroundTransparency = 1
         nameLabel.Text = player.Name
         nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
         nameLabel.Font = Enum.Font.GothamBold
-        nameLabel.TextSize = 14
+        nameLabel.TextSize = 12
         nameLabel.TextStrokeTransparency = 0
         nameLabel.Parent = billboard
         
-        local healthLabel = Instance.new("TextLabel")
-        healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
-        healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
-        healthLabel.BackgroundTransparency = 1
-        healthLabel.Text = "HP: " .. math.floor(humanoid.Health) .. "/" .. math.floor(humanoid.MaxHealth)
-        healthLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
-        healthLabel.Font = Enum.Font.Gotham
-        healthLabel.TextSize = 12
-        healthLabel.TextStrokeTransparency = 0
-        healthLabel.Parent = billboard
+        local healthBarBG = Instance.new("Frame")
+        healthBarBG.Size = UDim2.new(0, 4, 1, 0)
+        healthBarBG.Position = UDim2.new(0, 0, 0, 0)
+        healthBarBG.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        healthBarBG.BorderSizePixel = 1
+        healthBarBG.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        healthBarBG.Parent = billboard
+        
+        local healthBar = Instance.new("Frame")
+        healthBar.Size = UDim2.new(1, 0, humanoid.Health / humanoid.MaxHealth, 0)
+        healthBar.Position = UDim2.new(0, 0, 1, 0)
+        healthBar.AnchorPoint = Vector2.new(0, 1)
+        healthBar.BorderSizePixel = 0
+        
+        local healthPercent = humanoid.Health / humanoid.MaxHealth
+        if healthPercent > 0.5 then
+            healthBar.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        elseif healthPercent > 0.25 then
+            healthBar.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+        else
+            healthBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        end
+        
+        healthBar.Parent = healthBarBG
     end
     
     updateESP()
@@ -193,7 +263,7 @@ local function createESP(player)
         end
     end)
     
-    espFolder.Parent = CoreGui or game:GetService("CoreGui")
+    espFolder.Parent = workspace
 end
 
 local function removeESP(player)
@@ -225,11 +295,11 @@ AimButton.MouseButton1Click:Connect(function()
     aimEnabled = not aimEnabled
     
     if aimEnabled then
-        AimButton.Text = "AIMBOT: ON"
+        AimButton.Text = "Curseur: ON"
         AimButton.TextColor3 = Color3.fromRGB(100, 255, 100)
         AimButton.BackgroundColor3 = Color3.fromRGB(50, 100, 50)
     else
-        AimButton.Text = "AIMBOT: OFF"
+        AimButton.Text = "Curseur: OFF"
         AimButton.TextColor3 = Color3.fromRGB(255, 100, 100)
         AimButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
         isAiming = false
