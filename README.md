@@ -1,0 +1,2 @@
+# aimbot-lua-roblox
+aimbot
